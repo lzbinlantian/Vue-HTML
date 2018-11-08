@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap3.3.7.css">
+    <script src="../js/vue2.5.17.js"></script>
+
+</head>
+<body>
+
+<div id="app">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加品牌</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <label>
+                id:
+                <input type="text" v-model="id" class="form-control">
+            </label>
+            <label>
+                Name:
+                <input type="text" v-model="name" class="form-control" @keyup.enter="add" @keyup.f2="add">
+            </label>
+            <input type="button" value="添加" class="btn btn-primary" @click="add">
+
+
+            <label>
+                请输入关键字
+                <input type="text" v-model="keywords" class="form-control" v-focus v-color="'green'">
+            </label>
+
+
+        </div>
+    </div>
+
+
+    <!--bootstrap3的表格样式-->
+    <table class="table table-striped table-bordered table-hover table-striped">
+        <!--用于表示表格列-->
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Ctime</th>
+            <th>Operation</th>
+        </tr>
+        </thead>
+
+        <!--标识表格内容-->
+        <tbody>
+        <!--行-->
+        <!-- 之前v-for的数据都是从list中渲染的 -->
+        <!-- 现在 我们自己定义了一个serch方法、同时把所有搜索的关键字通过传参的形式、传递给search方法 -->
+        <tr v-for="item in search(keywords)" :key="item.id">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.ctime | dateFormat('yyyy-MM-dd')}}</td>
+            <!--prevent阻止默认行为-->
+            <td><a href="" @click.prevent="del(item.id)">删除</a></td>
+        </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
+
+
+<div id="app2">
+    <p v-font-weight="1"> 局部自定义指令</p>
+    <p v-color="'pink'">{{time | dateFormat}}</p>
+</div>
+<script>
+
+    /*过滤器*/
+    Vue.filter('dateFormat', function (dateStr, pattern = "") {
+
+        var dt = new Date(dateStr);
+
+        //yyyy-mm-dd
+        var y = dt.getFullYear();
+        var m = dt.getMonth() + 1;
+        var d = dt.getDate();
+
+        //return '{y} -${m}-${d}';
+
+        if (pattern.toLowerCase() == 'yyyy-MM-dd') {
+            return y + '-' + m + '-' + d;
+        } else {
+            var HH = dt.getHours();
+            var mm = dt.getMinutes();
+            var ss = dt.getSeconds();
+
+
+            return y + '-' + m + '-' + d + ' ' + ' ' + HH + ':' + mm + ':' + ss;
+        }
+
+
+    });
+
+
+    //全局变量、键盘变量
+    //Vue.config.keyCodes.f2 = 113;
+    Vue.config.keyCodes.f2 = 113;
+
+    Vue.directive('color', {
+        bind(el, binding) {
+            el.style.color = binding.value;
+
+        }
+    })
+
+
+    /*自定义指令*/
+    Vue.directive('focus', {
+        bind(el) {
+
+        },
+
+        inserted(el) {
+            el.focus();
+        },
+        updated(el) {
+
+        }
+
+
+    });
+
+
+    var vm2 = new Vue({
+        el: '#app2',
+        data: {
+            time: new Date(),
+        },
+        filters: {
+            dateFormat(dateStr, pattern = "") {
+                var dt = new Date(dateStr);
+
+                //yyyy-mm-dd
+                var y = dt.getFullYear();
+                var m = (dt.getMonth() + 1).toString().padStart(2, '0');
+                var d = dt.getDate().toString().padStart(2, '0');
+
+                //return '{y} -${m}-${d}';
+
+                if (pattern.toLowerCase() == 'yyyy-MM-dd') {
+                    return y + '-' + m + '-' + d;
+                } else {
+                    var HH = dt.getHours().toString().padStart(2, '0');
+                    var mm = dt.getMinutes().toString().padStart(2, '0');
+                    var ss = dt.getSeconds().toString().padStart(2, '0');
+
+
+                    return y + '-' + m + '-' + d + ' ' + ' ' + HH + ':' + mm + ':' + ss + '~~~~~~~~~~~~~~~';
+                }
+            },
+        },
+
+
+        //局部自定义指令失效
+        directives: {
+            /*不可以使用css相关的关键字*/
+            /* fontweight: {
+                 bind(el, binding) {
+                     el.style.fontWeight = binding.value;
+                 }
+             }*/
+
+            /*钩子函数简写。*/
+            fontWeight(el, binding) {
+                el.style.fontWeight = 500;
+                el.style.color = 'red';
+
+            }
+
+        }
+
+
+    });
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            id: '',
+            name: '',
+            keywords: '',
+            list: [
+                {id: 1, name: '奔驰', ctime: new Date()},
+                {id: 2, name: '宝马', ctime: new Date()},
+                {id: 3, name: '奔驰', ctime: new Date()},
+            ]
+        },
+        methods: {
+            add() {
+                this.list.push({id: this.id, name: this.name, ctime: new Date()})
+            },
+            del(id) {
+                /*根据id进行页面上的删除*/
+                this.list.some((item, i) => {
+
+                    if (item.id == id) {
+                        this.list.splice(i, 1);
+                        return true;
+                    }
+                })
+            },
+            search(keywords) {/*根据关键字、进行数据的搜索、过滤*/
+                /*   var newList = [];
+                   this.list.forEach(item => {
+                       if (item.name.indexOf(keywords) != -1) {
+                           newList.push(item);
+                       }
+                   });
+                   return newList;*/
+
+
+                return this.list.filter(item => {
+                    if (item.name.includes(keywords)) {
+                        return item;
+                    }
+                });
+
+
+            }
+
+        }
+    });
+</script>
+
+</body>
+</head></html>
+
+<!--过滤器调用时候的格式-->

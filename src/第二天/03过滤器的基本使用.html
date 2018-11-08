@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <p>
+        {{msg | msgFormat('疯狂')}}
+    </p>
+</div>
+
+<script>
+    /*定义过滤器*/
+    Vue.filter('msgFormat', function (msg, arg) {
+        return msg.replace(/单纯/g, arg);
+    });
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '曾经、我也是一个单纯的少年。单纯的我，傻傻的问，谁是世界上最单纯的男人'
+
+        },
+
+        methods: {}
+
+
+    });
+</script>
+
+</body>
+</html>

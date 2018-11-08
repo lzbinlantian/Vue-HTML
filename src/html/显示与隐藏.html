@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <input type="button" value='隐藏' @click="flag=!flag">
+    <h3 v-if="flag">这是用于控制 v-if 的元素、其他他就是真实关闭（注释）</h3>
+    <h3 v-show="flag">这是用于控制 v-show 的元素、他是修改display样式none</h3>
+</div>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            flag: true
+        },
+        methods: {}
+    })
+</script>
+
+</body>
+</html>

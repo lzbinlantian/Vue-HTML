@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap3.3.7.css">
+    <script src="../js/vue2.5.17.js"></script>
+    <script src="../js/vue-resourcesv1.51.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Panel title</h3>
+        </div>
+        <div class="panel-body">
+            Panel body ...
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>CTime</th>
+            <th>Operation</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in list">
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.ctime}}</td>
+            <td><a href="">删除</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            list: [
+                {id: 1, name: '五菱宏光', ctime: new Date()},
+                {id: 2, name: '法拉利', ctime: new Date()},
+                {id: 3, name: '保时捷', ctime: new Date()},
+                {id: 4, name: '布加迪威龙', ctime: new Date()},
+            ]
+        },
+        methods:{
+
+        }
+    })
+</script>
+
+</body>
+</html>

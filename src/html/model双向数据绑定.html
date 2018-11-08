@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h4 v-text="message"></h4>
+    <input type="text" v-model="message">
+</div>
+
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            message:'傻傻是最棒棒的'
+        }
+
+    })
+</script>
+
+
+
+
+</body>
+</html>

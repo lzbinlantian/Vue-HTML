@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--引入Js-->
+    <script src="../js/vue2.5.17.js"></script>
+
+</head>
+<body>
+<div id="app">
+    <input type="button" value="浪起来" @click="lang">
+    <input type="button" value="低调" @click="stop">
+    <h1 v-text="msg"></h1>
+</div>
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            msg: '温大傻是最傻的',
+            intervalId: null
+        },
+        methods: {
+            lang() {
+                if (this.intervalId != null) {
+                    return;
+                }
+                /*()=>代表匿名函数、指向上一级域属性池、this可用、其实就是指向vm层、可以用data数据*/
+                this.intervalId = setInterval(() => {
+                    //this.msg = '先替换下看看';
+                    var start = this.msg.substring(0, 1);
+                    var end = this.msg.substring(1);
+                    this.msg = end + start;
+                }, 400);
+            },
+            stop() {
+                //停止定时器
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+
+
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+</head>
+
+<body>
+
+<div id="app-4">
+    <ol>
+        <li v-for="(todo,i) in todos">
+            {{ todo.text }} + 索引值{{i}}
+        </li>
+    </ol>
+</div>
+
+
+<script>
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            todos: [
+                {text: '学习 JavaScript'},
+                {text: '学习 Vue'},
+                {text: '整个牛项目'}
+            ]
+        }
+    })
+</script>
+</body>
+</html>

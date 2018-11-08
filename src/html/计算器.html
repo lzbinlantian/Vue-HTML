@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <input type="text" v-model="n1">
+
+    <select v-model="opt">
+        <option value="+">+</option>
+        <option value="-">-</option>
+        <option value="*">*</option>
+        <option value="/">/</option>
+    </select>
+
+
+
+
+    <input type="text" v-model="n2">
+
+    <input type="button" value="=" @click="cal">
+
+    <input type="text" v-model="result">
+</div>
+
+
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            n1: null,
+            opt: '+',
+            n2: null,
+            result: null
+        },
+        methods: {
+            cal() {
+                /* switch (this.opt) {
+                     case '+':
+                         this.result = (parseInt(this.n1) + parseInt(this.n2))
+                         break;
+                     case '-':
+                         this.result = parseInt(this.n1) - parseInt(this.n2)
+                         break;
+                     case '*':
+                         this.result = parseInt(this.n1) * parseInt(this.n2)
+                         break;
+                     case '/':
+                         this.result = parseInt(this.n1) / parseInt(this.n2)
+                         break;
+
+                 }*/
+
+                var codeStr = ' parseInt(this.n1)' + this.opt + 'parseInt(this.n2)';
+                this.result = eval(codeStr);
+            },
+        }
+
+    })
+</script>
+
+</body>
+</html>

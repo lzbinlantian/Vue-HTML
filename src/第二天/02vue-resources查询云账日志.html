@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap3.3.7.css">
+    <script src="../js/vue2.5.17.js"></script>
+    <script src="../js/vue-resourcesv1.51.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">极速云账</h3>
+        </div>
+        <div class="panel-body">
+            职员管理
+        </div>
+    </div>
+
+    <div class="form-inline">
+
+        姓名 ： <input type="text" v-model="staffname" class="form-control">
+        手机 ： <input type="text" v-model="phone" class="form-control">
+        邮箱 ： <input type="text" v-model="email" class="form-control">
+        <input type="button" value="添加" @click="addStaff" class="btn btn-primary">
+    </div>
+
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>姓名</th>
+            <th>手机</th>
+            <th>邮箱</th>
+            <th>状态</th>
+            <th>创建时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="staff in staffList">
+            <td>{{staff.id}}</td>
+            <td>{{staff.staffname}}</td>
+            <td>{{staff.phone}}</td>
+            <td>{{staff.email }}</td>
+            <td>{{staff.staffstatus }}</td>
+            <td>{{staff.createtime | timeformat}}</td>
+            <td>{{staff.updatetime | timeformat}}</td>
+            <td>
+                <input type="button" value="修改" class="btn btn-primary">
+                <input type="button" value="冻结" @click="freeze(staff.id)" class="btn btn-primary">
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div class="form-inline">
+
+        请输入你的页码数 ： <input type="text" class="form-control " v-model="indexPage">
+        <input type="button" value="一键查询日志" @click="selectStaffList" class="btn btn-primary">
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            staffList: [],
+            indexPage: 1,
+            staffname: '咸鱼a',
+            phone: '18038060734',
+            email: '249857552@qq.com',
+            id: null
+
+        },
+        methods: {
+            /*不能前面加 / */
+            selectStaffList() {
+                this.$http.post('portal/Staff/SelectByUserCompanyId',
+                    {
+                        staffPhone: 18038060732,
+                        index: this.indexPage,
+                        status: '在职'
+                    }, {emulateJSON: true}
+                ).then(function (result) {
+                    console.log(result);
+                    this.staffList = result.body.data.list;
+
+                });
+
+
+            },
+            /*增加职员*/
+            addStaff() {
+                this.$http.post('portal/Staff/create',
+                    {
+                        phone: this.phone,
+                        staffname: this.staffname,
+                        email: this.email,
+
+                        staffPhone: '18038060732',
+                        usercompanyid: 2,
+                        passwd: '123456',
+                        status: '在职'
+                    }, {emulateJSON: true}
+                ).then(result => {
+                    console.log(result);
+                    this.selectStaffList();
+                });
+            },
+            freeze(id) {
+                this.$http.post('portal/Staff/freeze',
+                    {
+                        id: id
+                    }, {emulateJSON: true}
+                ).then(result => {
+                    console.log(result);
+                    this.selectStaffList();
+                });
+            }
+
+
+        },
+
+        filters: {
+            timeformat(createtime) {
+
+                return getSmpFormatDateByLong(createtime, true);
+            }
+        },
+
+        /*定义VM-AJAX前缀访问*/
+        http: {
+            root: 'http://39.108.219.98:8080'
+
+        }
+
+
+    });
+</script>
+
+<script language="javascript">
+    //扩展Date的format方法
+    Date.prototype.format = function (format) {
+        var o = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S": this.getMilliseconds()
+        }
+        if (/(y+)/.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+            }
+        }
+        return format;
+    }
+
+    /**
+     *转换日期对象为日期字符串
+     * @param date 日期对象
+     * @param isFull 是否为完整的日期数据,
+     *               为true时, 格式如"2000-03-05 01:05:04"
+     *               为false时, 格式如 "2000-03-05"
+     * @return 符合要求的日期字符串
+     */
+    function getSmpFormatDate(date, isFull) {
+        var pattern = "";
+        if (isFull == true || isFull == undefined) {
+            pattern = "yyyy-MM-dd hh:mm:ss";
+        } else {
+            pattern = "yyyy-MM-dd";
+        }
+        return getFormatDate(date, pattern);
+    }
+
+    /**
+     *转换当前日期对象为日期字符串
+     * @param date 日期对象
+     * @param isFull 是否为完整的日期数据,
+     *               为true时, 格式如"2000-03-05 01:05:04"
+     *               为false时, 格式如 "2000-03-05"
+     * @return 符合要求的日期字符串
+     */
+
+    function getSmpFormatNowDate(isFull) {
+        return getSmpFormatDate(new Date(), isFull);
+    }
+
+    /**
+     *转换long值为日期字符串
+     * @param l long值
+     * @param isFull 是否为完整的日期数据,
+     *               为true时, 格式如"2000-03-05 01:05:04"
+     *               为false时, 格式如 "2000-03-05"
+     * @return 符合要求的日期字符串
+     */
+
+    function getSmpFormatDateByLong(l, isFull) {
+        return getSmpFormatDate(new Date(l), isFull);
+    }
+
+    /**
+     *转换long值为日期字符串
+     * @param l long值
+     * @param pattern 格式字符串,例如：yyyy-MM-dd hh:mm:ss
+     * @return 符合要求的日期字符串
+     */
+
+    function getFormatDateByLong(l, pattern) {
+        return getFormatDate(new Date(l), pattern);
+    }
+
+    /**
+     *转换日期对象为日期字符串
+     * @param l long值
+     * @param pattern 格式字符串,例如：yyyy-MM-dd hh:mm:ss
+     * @return 符合要求的日期字符串
+     */
+    function getFormatDate(date, pattern) {
+        if (date == undefined) {
+            date = new Date();
+        }
+        if (pattern == undefined) {
+            pattern = "yyyy-MM-dd hh:mm:ss";
+        }
+        return date.format(pattern);
+    }
+
+</script>
+
+</body>
+</html>

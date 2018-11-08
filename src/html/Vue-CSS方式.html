@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<head xmlns:v-bind="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+    <style>
+        .active {
+
+            width: 100px;
+            height: 100px;
+            background: green;
+        }
+
+        .red {
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div :class="classObject"></div>
+    <h1 :class="{active: true}">H1</h1>
+
+
+    <h1 :style="[classStyle]">内敛模式</h1>
+</div>
+
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            classObject: {
+                'active': true,
+            },
+            classStyle: {
+                color: 'red'
+            }
+
+
+        }
+
+    });
+</script>
+</body>
+</html>
