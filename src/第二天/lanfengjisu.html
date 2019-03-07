@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap3.3.7.css">
+    <script src="../js/vue2.5.17.js"></script>
+    <script src="../js/vue-resourcesv1.51.js"></script>
+</head>
+<body>
+<div id="app">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">蓝峰极速</h3>
+        </div>
+        <div class="panel-body">
+            菜品管理
+        </div>
+    </div>
+
+    <div>
+        门店序号=门号
+        1=M记
+        2=尊宝
+    </div>
+
+
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>门店序号</th>
+            <th>菜名</th>
+            <th>图片</th>
+            <th>价格</th>
+            <th>类目</th>
+
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="dishes in dishesList" :key="dishes.id">
+            <td>{{dishes.id}}</td>
+            <td>{{dishes.storeid}}</td>
+            <td>{{dishes.dishname}}</td>
+            <td> <img :src="dishes.dishimagepath"> </td>
+            <td>{{dishes.dishprice }}</td>
+            <td>{{dishes.dishesclassification }}</td>
+
+            <td>
+                <!--<input type="button" value="修改" class="btn btn-primary">-->
+                <input type="button" value="删除" @click="deleteById(dishes.id)" class="btn btn-primary">
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <div class="form-inline">
+      门店序号  <input type="text" v-model="storeId" class="form-control">
+        <input type="button" value="一键查询菜品" @click="selectDishesList" class="btn btn-primary">
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            dishesList: [],
+            id: null,
+
+            storeId: '1',
+            dishName: '薯条',
+            dishImagePath: null,
+            dishPrice: 1.00,
+
+
+        },
+        methods: {
+            /*不能前面加 / */
+            selectDishesList() {
+                this.$http.post('backend/dishes/SelectbyShoreid',
+                    {
+                        storeId: this.storeId,
+
+                    }, {emulateJSON: true}
+                ).then(function (result) {
+                    console.log(result);
+                    this.dishesList = result.body.data;
+
+                });
+            },
+
+            deleteById(id) {
+                this.$http.post('backend/dishes/Delete',
+                    {
+                        id: id,
+
+                    }, {emulateJSON: true}
+                ).then(function (result) {
+                    console.log(result);
+                    this.dishesList = result.body.data;
+                    this.selectDishesList();
+                });
+
+
+
+            },
+
+
+
+        },
+
+        /*定义VM-AJAX前缀访问*/
+        http: {
+            root: 'http://127.0.0.1:8091'
+
+        }
+
+
+    });
+
+</script>
+
+
+</body>
+</html>

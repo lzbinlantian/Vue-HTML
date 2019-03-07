@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/vue2.5.17.js"></script>
+    <script src="../js/vue-resourcesv1.51.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <input type="button" value="测试一个按钮显示多条接口数据" @click="select">
+    <hr>
+    {{list1}}
+    <hr>
+    {{list2}}
+</div>
+
+
+<script>
+    var vm = new Vue({
+        el:'#app',
+        data:{
+            list1:[],
+            list2:[],
+            list3:[],
+        },
+        methods:{
+            select(){
+                this.$http.post('http://39.108.219.98:8888/backend/staff/CheckallStaff',
+                    {
+                        loginPhone: 13413961367,
+                        index: 1,
+                        status: '在职'
+                    }, {emulateJSON: true}
+                ).then(function (result) {
+                    console.log(result);
+
+                    this.list1 = result.body.data.list;
+
+                });
+
+                this.$http.post('http://39.108.219.98:8888/backend/staff/CheckstaffByStaffphone',
+                    {
+                        staffphone: 18811810314,
+                        loginPhone: 13413961367,
+                    }, {emulateJSON: true}
+                ).then(function (result) {
+                    console.log(result);
+
+                    this.list2 = result.body;
+
+                });
+
+
+
+            }
+        },
+    })
+</script>
+</body>
+</html>
