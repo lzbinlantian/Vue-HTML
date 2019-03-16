@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/bootstrap3.3.7.css">
+    <script src="../js/vue2.5.17.js"></script>
+    <script src="../js/vue-resourcesv1.51.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>
+        <p>使用过滤器：{{time | dateFormat('yyyy-MM-dd')}}</p>
+
+        <p>不使用过滤器{{time}}</p>
+    </h1>
+
+</div>
+
+<script>
+    /*过滤器*/
+    Vue.filter('dateFormat', function (dateStr, pattern = "") {
+
+        var dt = new Date(dateStr);
+
+        //yyyy-mm-dd
+        var y = dt.getFullYear();
+        var m = dt.getMonth() + 1;
+        var d = dt.getDate();
+
+        //return '{y} -${m}-${d}';
+
+        if (pattern.toLowerCase() == 'yyyy-MM-dd') {
+            return y + '-' + m + '-' + d;
+        } else {
+            var HH = dt.getHours();
+            var mm = dt.getMinutes();
+            var ss = dt.getSeconds();
+
+
+            return y + '-' + m + '-' + d + ' ' + ' ' + HH + ':' + mm + ':' + ss;
+        }
+
+
+    });
+
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            time: new Date,
+            list: [
+                {id: 1, name: '五菱宏光', ctime: new Date()},
+            ]
+        },
+        methods: {},
+        filters: {},
+        //局部自定义指令失效
+        directives: {
+            /*不可以使用css相关的关键字*/
+            /* fontweight: {
+                 bind(el, binding) {
+                     el.style.fontWeight = binding.value;
+                 }
+             }*/
+            /*钩子函数简写。*/
+            fontWeight(el, binding) {
+                /* el.style.fontWeight = 500;
+                 el.style.color = 'red';
+                 */
+            }
+
+        }
+    });
+</script>
+
+</body>
+</html>
